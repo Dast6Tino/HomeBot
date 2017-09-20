@@ -13,7 +13,7 @@ class BotBrain : TelegramLongPollingBot() {
         if (update.hasMessage() && update.message.hasText()) {
             val message = SendMessage() // Create a SendMessage object with mandatory fields
                     .setChatId(update.message.chatId)
-                    .setText("${update.message.text}+${update.message.chatId}")
+                    .setText("${update.message.text} ${update.message.chatId}")
             try {
                 sendMessage(message) // Call method to send the message
             } catch (e: TelegramApiException) {
