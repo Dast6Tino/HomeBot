@@ -7,7 +7,7 @@ import org.telegram.telegrambots.api.methods.send.SendMessage
 
 class BotBrain : TelegramLongPollingBot() {
 
-    override fun getBotUsername() = "DstHomeBot"
+    override fun getBotUsername() = brain.botUsername()
 
     override fun onUpdateReceived(update: Update) {
         if (update.hasMessage() && update.message.hasText()) {
@@ -23,6 +23,6 @@ class BotBrain : TelegramLongPollingBot() {
         }
     }
 
-    override fun getBotToken() = "405045644:AAF4e9KSwRjyuGdfc6i2Yx6x-H9azotEk-A"
+    override fun getBotToken() = brain.botToken()
 
 }
