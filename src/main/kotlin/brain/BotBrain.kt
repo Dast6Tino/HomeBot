@@ -4,15 +4,15 @@ import org.telegram.telegrambots.api.objects.Update
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.exceptions.TelegramApiException
 import org.telegram.telegrambots.api.methods.send.SendMessage
+import org.telegram.telegrambots.api.objects.Document
 import org.telegram.telegrambots.api.objects.Message
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
 import javax.print.PrintException
-import javax.print.DocPrintJob
 import javax.print.PrintServiceLookup
 import javax.print.attribute.standard.PageRanges
 import javax.print.attribute.HashPrintRequestAttributeSet
-import javax.print.attribute.PrintRequestAttributeSet
-
-
+import javax.swing.JFileChooser
 
 class BotBrain : TelegramLongPollingBot() {
     private val helpMessage = "Печать -- /print\nСохранить файл -- /save\nПоказать последние файлы -- /show"
@@ -32,7 +32,8 @@ class BotBrain : TelegramLongPollingBot() {
                         commandCheck(update.message)
                     }
                     update.message.hasDocument() -> {
-
+                        commandPrint(update.message.chatId, update.message.document)
+                        commandSave(update.message.document)
                     }
                     update.message.hasPhoto() -> {
 
@@ -68,18 +69,12 @@ class BotBrain : TelegramLongPollingBot() {
         }
     }
 
-    private fun checkAuthorize(chatId: Long): Boolean {
-        if (chatId == 259558114.toLong() /*|| chatId ==*/ ) {
-            return true
-        } else {
-            return false
-        }
-    }
+    private fun checkAuthorize(chatId: Long) = chatId == 259558114.toLong() || chatId == 72836827.toLong()
 
     private fun sendMessage(chatId: Long, msg: String) {
         val message = SendMessage()
                 .setChatId(chatId)
-                .setText(msg + chatId)
+                .setText(msg)
         try {
             sendMessage(message) // Call method to send the message
         } catch (e: TelegramApiException) {
@@ -87,18 +82,36 @@ class BotBrain : TelegramLongPollingBot() {
         }
     }
 
-    private fun printCommand() {
+    private fun commandPrint(chatId: Long, document: Document) {
         val aset = HashPrintRequestAttributeSet()
-        aset.add(PageRanges(1, 5))
+
+        sendMessage(chatId, document.toString())
+
+        /*aset.add(PageRanges(1, 5))
         val services = PrintServiceLookup.lookupPrintServices(myFormat, aset)
         if (services.isNotEmpty()) {
             val job = services[0].createPrintJob()
             try {
-                job.print(myDoc, aset)
+                job.print(document, aset)
             } catch (pe: PrintException) {
                 pe.printStackTrace()
             }
-        }
+        }*/
     }
 
+    private fun commandSave(file: Any) {
+
+        /*val fc = JFileChooser()
+        if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            try {
+                val fileStream = FileOutputStream(fc.selectedFile)
+                val os = ObjectOutputStream(fileStream)
+                os.writeObject(file)
+                os.close()
+            }
+            catch (e: Exception) {
+                println("Что-то пошло не так...")
+            }
+        }*/
+    }
 }
